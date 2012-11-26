@@ -9,7 +9,9 @@
 	(:import [java.io File]))
 
 ; keep the options as a ref available
-(def options (ref []))
+(def options (ref {}))
+; keep those tags here
+(def htags (map #(str "h" %) (range 1 7)))
 ; should be as an option
 (def file-regexp "/**/*.md")
 
@@ -26,10 +28,14 @@
 	[filepath]
 	(.markdown (MarkdownProcessor.) (slurp filepath)))
 
+(defn sanitize
+	[html]
+	(.replaceAll html " " ""))
+
 (defn anchorify
 	"wrap a tag with a name anchor"
 	[htag]
-	(let[sanity (.replaceAll (.html htag) " " "")]
+	(let[sanity (sanitize (.html htag))]
 	(.html htag 
 		(str 
 		 "<" (.tagName htag) ">" 
@@ -37,17 +43,41 @@
 		 "</" (.tagName htag) ">" 
 		 "</a>"))
 	(.tagName htag "a")
-	(.attr htag "name" sanity)))	
+	(.attr htag "name" sanity)))
+
+; (def h1 (.clone (first (select "h1" p1))))
+
+(defn linkify-tag
+	"Change a header tag to the same header with a link inside"
+	[html-file htag]
+	(let [
+		filename (.getName (io/file html-file)) 
+		link (str filename "#" (sanitize (.html htag)))
+		]
+	  (.html htag (str 
+	  	"<a target=\"_blank\" href=\"" 
+	  	link 
+	  	"\">" 
+	  	(.html htag) 
+	  	"</a>"))))
+
+(defn linkify-toc
+	[html-file content]
+	(doseq [htag htags]
+		(doseq [h (select htag content)]
+			(linkify-tag html-file h)))
+	content)
 
 (defn anchors
 	"wrap all header tags with name anchors"
 	[content]
-	(doseq [t (map #(str "h" %) (range 1 7))]
-		(pmap #(anchorify %) (select t content)))
+	(doseq [htag htags]
+		(doseq [h (select htag content)]
+			(anchorify h)))
 	content)
 
 (defn html-with-anchors 
-	"Parse a file, turn it to HTML and spit the clean content to a file"
+	"Puts anchors in the HTML and clean it"
 	[parsed]
 	(select "body > *" (anchors (.clone parsed))))
 
@@ -64,7 +94,8 @@
 	(parse (markup-to-html filepath)))
 
 (defn toc-one
-	"Remove all the tags except header tags to keep doc structure"
+	"Remove all the tags except header tags to keep doc structure
+	Warning! Content is modified now."
 	[content]
 	(doseq [t ["p" "ul" "li" "a" "img" "pre" "code" "blockquote" ]]
 		(.remove (select t content)))
@@ -73,11 +104,17 @@
 (defn process-content
 	"Process the content of a markup file"
 	[markup-file]
-	(let [ parsed (parse-file markup-file)] 
+	(let [ 
+		parsed (parse-file markup-file)
+		html-output-file (path-to-html-output markup-file) 
+	 ] 
 	 ; write html to file
- 	 (spit (path-to-html-output markup-file) (html-with-anchors parsed))
+ 	 (spit 
+ 	 	html-output-file
+ 	 	(html-with-anchors parsed))
  	 ; write toc to file
-     (write (toc-one parsed))))
+     (write 
+     	(linkify-toc html-output-file (toc-one parsed)))))
 
 (defn toc-files
 	"Process all <files>"
@@ -119,3 +156,12 @@
 			(println "Using parameters:" @options)
 			(toc (@options :folder))))
 	(System/exit 0)))
+
+(dosync 
+	(ref-set options 
+		{:folder "../niclojure/texten"
+		 :toc-filename "toc.html" 
+		 :output "output"}))
+
+(def t1 (toc-one (parse-file "text/simple.md")))
+(println (linkify-toc "a.html" t1))

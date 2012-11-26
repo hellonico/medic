@@ -1,6 +1,7 @@
 (ns medic.pre
 	(:use clojure.java.io))
 
+; try to make it multiline 
 (def pre-process-pattern #"@@@ (.*) (.*) @@@")
 
 (defn code[file args]
