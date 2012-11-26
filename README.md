@@ -16,7 +16,7 @@
 
 ## Usage
 
-java -jar medic-1.0.0-standalone.jar <options>
+java -jar medic-1.0.0-standalone.jar --help
 
 ## License
 

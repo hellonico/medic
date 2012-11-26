@@ -91,7 +91,6 @@
 				["-h" "--help" "Print this message"]
      			["-o" "--output" "Output folder" :default "output"] 
      			["-toc" "--toc-filename" "TOC filename" :default "toc.html"]
-     			;["-f" "--file" "The markdown file"]
      			["-d" "--folder" "The top folder with the markdown files" :default "text"]
      			["-c" "--customization" "A folder with header.html, footer.html"])]
 	(if (contains? loptions :help)

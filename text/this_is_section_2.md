@@ -15,4 +15,4 @@
 
 _hello_
 
-![](monday-killer1.jpg)
+![](../public/monday-killer1.jpg)

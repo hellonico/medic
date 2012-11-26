@@ -13,4 +13,4 @@
 
 ## Workflow
 
-![](monday-killer1.jpg)
+![](../public/monday-killer1.jpg)
