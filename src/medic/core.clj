@@ -11,7 +11,7 @@
 (def options (ref []))
 
 (defn get-toc-file[]
-	(str (@options :output) "/" "toc.html"))
+	(str (@options :output) "/" (@options :toc-filename)))
 
 (defn write
 	"Helper method. Writes/Append to file"
@@ -88,11 +88,16 @@
 	(let [
 		[loptions args banner]  
 			(cli args
+				["-h" "--help" "Print this message"]
      			["-o" "--output" "Output folder" :default "output"] 
-     			["-f" "--file" "The markdown file"]
-     			["-d" "--folder" "The folder with the markdown files" :default "text"]
+     			["-toc" "--toc-filename" "TOC filename" :default "toc.html"]
+     			;["-f" "--file" "The markdown file"]
+     			["-d" "--folder" "The top folder with the markdown files" :default "text"]
      			["-c" "--customization" "A folder with header.html, footer.html"])]
-	(dosync (ref-set options loptions))
-	(println "Using parameters:" @options)
-	(toc (@options :folder))
+	(if (contains? loptions :help)
+		(println banner)
+		(do
+			(dosync (ref-set options loptions))
+			(println "Using parameters:" @options)
+			(toc (@options :folder))))
 	(System/exit 0)))
