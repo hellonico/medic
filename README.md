@@ -12,6 +12,7 @@
 * Support for subfolders
 * *Should be able to have code highlighting*
 * Should still be able to generate the old TOC with headers and footers
+* if we include other files, we need to remove recursive option
 
 ## Usage
 
