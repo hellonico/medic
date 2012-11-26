@@ -60,16 +60,22 @@
 	[content]
 	(doseq [t ["p" "ul" "li" "a" "img" "pre" "code" "blockquote" ]]
 		(.remove (select t content)))
-	content)
+	($ content "body > *"))
 
-(defn toc_all
+
+(def file-regexp "/**/*.md")
+
+(defn toc-all
 	"Prepare a TOC from all the files, recursively"
 	[base]
-	(doseq [md (glob (str base "/**/*.md"))] 
+	(doseq [md (glob (str base file-regexp))] 
 		(let [ 
 			md-content-no-anchors (rd md)
 			cleaned (tic md-content-no-anchors)]
-		  (write ($ cleaned "body > *")))))
+		  (write cleaned))))
+
+; so we can also stylize the aggregated html files
+(defn stylize[file style-folder])
 
 (defn toc
 	"Main method"
@@ -78,7 +84,7 @@
 	(write "" false)
 	(if (@options :customization)
 	 (write (slurp (str (@options :customization) "/header.html"))))
-	(toc_all base)
+	(toc-all base)
 	(if (@options :customization)
 	 (write (slurp (str (@options :customization) "/footer.html")))))
 
