@@ -5,6 +5,7 @@
   ; 	[midje "1.4.0"]
   ; ]
   :dependencies [
+    [com.uwyn/jhighlight "1.0"]
   	[org.clojure/clojure "1.5.0-beta1"]
   	[org.clojure/tools.cli "0.2.2"]
   	[org.clojure/data.json "0.1.3"]

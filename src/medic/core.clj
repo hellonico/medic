@@ -1,6 +1,7 @@
 (ns medic.core
 	(:gen-class :main true)
 	(:use org.satta.glob)
+	(:require [medic.pre :as pre])
 	(:require [clojure.java.io :as io])
 	(:use jsoup.soup)
 	(:use [clojure.tools.cli :only [cli]])
@@ -9,16 +10,18 @@
 
 ; keep the options as a ref available
 (def options (ref []))
+; should be as an option
+(def file-regexp "/**/*.md")
 
-(defn get-toc-file[]
+(defn path-to-toc[]
 	(str (@options :output) "/" (@options :toc-filename)))
 
 (defn write
 	"Helper method. Writes/Append to file"
-	([text dontappend] (spit (get-toc-file) text))
-	([text] (spit (get-toc-file) text :append true)))
+	([text dontappend] (spit (path-to-toc) text))
+	([text] (spit (path-to-toc) text :append true)))
 
-(defn mp
+(defn markup-to-html
 	"turn markup into html"
 	[filepath]
 	(.markdown (MarkdownProcessor.) (slurp filepath)))
@@ -34,7 +37,7 @@
 		 "</" (.tagName htag) ">" 
 		 "</a>"))
 	(.tagName htag "a")
-	(.attr htag "name" sanity)))
+	(.attr htag "name" sanity)))	
 
 (defn anchors
 	"wrap all header tags with name anchors"
@@ -43,39 +46,49 @@
 		(pmap #(anchorify %) (select t content)))
 	content)
 
-(defn rd 
+(defn html-with-anchors 
 	"Parse a file, turn it to HTML and spit the clean content to a file"
-	[filepath]
-	(let [
-		md (mp filepath)
-		parsed (parse md)
-		anchored (anchors (.clone parsed))
-		clean  (select "body > *" anchored)
-	]
-	(spit (str (@options :output) "/" (.getName (io/file filepath)) ".html") clean)
-	parsed))
+	[parsed]
+	(select "body > *" (anchors (.clone parsed))))
 
-(defn tic
+(defn path-to-html-output
+	"Find the path to output html version of a markup file"
+	[filepath]
+	(str 
+		(@options :output) 
+		"/" 
+		(.getName (io/file filepath)) 
+		".html"))
+
+(defn parse-file[filepath]
+	(parse (markup-to-html filepath)))
+
+(defn toc-one
 	"Remove all the tags except header tags to keep doc structure"
 	[content]
 	(doseq [t ["p" "ul" "li" "a" "img" "pre" "code" "blockquote" ]]
 		(.remove (select t content)))
 	($ content "body > *"))
 
+(defn process-content
+	"Process the content of a markup file"
+	[markup-file]
+	(let [ parsed (parse-file markup-file)] 
+	 ; write html to file
+ 	 (spit (path-to-html-output markup-file) (html-with-anchors parsed))
+ 	 ; write toc to file
+     (write (toc-one parsed))))
 
-(def file-regexp "/**/*.md")
+(defn toc-files
+	"Process all <files>"
+	[files]
+	(doseq [markup-file files] 
+		  (process-content markup-file)))
 
-(defn toc-all
-	"Prepare a TOC from all the files, recursively"
+(defn toc-folder
+	"Prepare a TOC from files found in a folder"
 	[base]
-	(doseq [md (glob (str base file-regexp))] 
-		(let [ 
-			md-content-no-anchors (rd md)
-			cleaned (tic md-content-no-anchors)]
-		  (write cleaned))))
-
-; so we can also stylize the aggregated html files
-(defn stylize[file style-folder])
+	(toc-files (glob (str base file-regexp))))
 
 (defn toc
 	"Main method"
@@ -84,7 +97,7 @@
 	(write "" false)
 	(if (@options :customization)
 	 (write (slurp (str (@options :customization) "/header.html"))))
-	(toc-all base)
+	(toc-folder base)
 	(if (@options :customization)
 	 (write (slurp (str (@options :customization) "/footer.html")))))
 
