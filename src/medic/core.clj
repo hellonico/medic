@@ -14,6 +14,8 @@
 (def htags (map #(str "h" %) (range 1 7)))
 ; should be as an option
 (def file-regexp "/**/*.md")
+; one for all
+(def peg (org.pegdown.PegDownProcessor. 65535))
 
 (defn path-to-toc[]
 	(str (@options :output) "/" (@options :toc-filename)))
@@ -24,9 +26,15 @@
 	([text] (spit (path-to-toc) text :append true)))
 
 (defn markup-to-html
+	[content]
+	(.markdownToHtml peg content))
+
+(defn markup-file-to-html
 	"turn markup into html"
 	[filepath]
-	(.markdown (MarkdownProcessor.) (slurp filepath)))
+		markup-to-html (slurp filepath))
+
+; (.markdown (MarkdownProcessor.) (slurp filepath)))
 
 (defn sanitize
 	[html]
@@ -44,8 +52,6 @@
 		 "</a>"))
 	(.tagName htag "a")
 	(.attr htag "name" sanity)))
-
-; (def h1 (.clone (first (select "h1" p1))))
 
 (defn linkify-tag
 	"Change a header tag to the same header with a link inside"
@@ -90,8 +96,10 @@
 		(.getName (io/file filepath)) 
 		".html"))
 
-(defn parse-file[filepath]
-	(parse (markup-to-html filepath)))
+(defn parse-file
+	"pre process and parse markdown to html"
+	[filepath]
+	(parse (markup-to-html (pre/pre-read filepath))))
 
 (defn toc-one
 	"Remove all the tags except header tags to keep doc structure
@@ -147,21 +155,28 @@
 				["-h" "--help" "Print this message"]
      			["-o" "--output" "Output folder" :default "output"] 
      			["-toc" "--toc-filename" "TOC filename" :default "toc.html"]
+     			; ["-e" "--embed-toc" "TOC inside the generated HTML" :default false]
+     			; ["-e" "--embed-toc" "TOC inside the generated HTML" :default false]
      			["-d" "--folder" "The top folder with the markdown files" :default "text"]
      			["-c" "--customization" "A folder with header.html, footer.html"])]
 	(if (contains? loptions :help)
 		(println banner)
 		(do
 			(dosync (ref-set options loptions))
+			; make sure we have the output directory
+			(.mkdir (io/as-file (@options :output)))
 			(println "Using parameters:" @options)
 			(toc (@options :folder))))
 	(System/exit 0)))
 
 (dosync 
 	(ref-set options 
-		{:folder "../niclojure/texten"
+		{
+		 :customization "../niclojure/html"
+		 :folder "../niclojure/texten"
 		 :toc-filename "toc.html" 
 		 :output "output"}))
 
-(def t1 (toc-one (parse-file "text/simple.md")))
-(println (linkify-toc "a.html" t1))
+; (def t1 (toc-one (parse-file "text/simple.md")))
+; (println (linkify-toc "a.html" t1))
+(toc (@options :folder))

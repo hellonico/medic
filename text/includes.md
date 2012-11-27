@@ -1,6 +1,6 @@
 # I am a test to pre-processors
 
-@@@ toc @@@
+@@@ toc 3 @@@
 
 @@@ include this_is_section_1.md @@@
 
