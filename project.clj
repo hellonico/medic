@@ -19,4 +19,15 @@
     ; or
     [org.pegdown/pegdown "1.2.0"]
     [org.parboiled/parboiled-java "1.1.3"]
+     ; really needed ? ? ?
+    [org.parboiled/parboiled-core "1.1.3"]
+     ; [asm/asm-all "3.3.1"]
+
+    ; pdf generation
+    [com.lowagie/itext "2.0.8"
+    :exclusions [bctsp/bcmail-jdk14 org.apache.ant/ant org.apache.ant/ant-launcher]]
+    ; html -> pdf conversion
+    [de.huxhorn.lilith/de.huxhorn.lilith.3rdparty.flyingsaucer.core-renderer "8RC1" 
+    :exclusions [bctsp/bcmail-jdk14 org.apache.ant/ant org.apache.ant/ant-launcher]]    
+
    ])

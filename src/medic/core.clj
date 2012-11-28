@@ -15,7 +15,7 @@
 ; should be as an option
 (def file-regexp "/**/*.md")
 ; one for all
-(def peg (org.pegdown.PegDownProcessor. 65535))
+(def peg (org.pegdown.PegDownProcessor. 0))
 
 (defn path-to-toc[]
 	(str (@options :output) "/" (@options :toc-filename)))
@@ -38,7 +38,7 @@
 
 (defn sanitize
 	[html]
-	(.replaceAll html " " ""))
+	  (.replaceAll html " " ""))
 
 (defn anchorify
 	"wrap a tag with a name anchor"
@@ -90,11 +90,14 @@
 (defn path-to-html-output
 	"Find the path to output html version of a markup file"
 	[filepath]
-	(str 
-		(@options :output) 
-		"/" 
-		(.getName (io/file filepath)) 
-		".html"))
+	(if (@options :one)
+		(str 
+			(@options :output) "/one.html" )
+		(str 
+			(@options :output) 
+			"/" 
+			(.getName (io/file filepath)) 
+			".html")))
 
 (defn parse-file
 	"pre process and parse markdown to html"
@@ -119,7 +122,7 @@
 	 ; write html to file
  	 (spit 
  	 	html-output-file
- 	 	(html-with-anchors parsed))
+ 	 	(html-with-anchors parsed) :append (@options :one))
  	 ; write toc to file
      (write 
      	(linkify-toc html-output-file (toc-one parsed)))))
@@ -127,24 +130,27 @@
 (defn toc-files
 	"Process all <files>"
 	[files]
-	(doseq [markup-file files] 
+		(doseq [markup-file files] 
 		  (process-content markup-file)))
 
 (defn toc-folder
 	"Prepare a TOC from files found in a folder"
 	[base]
-	(toc-files (glob (str base file-regexp))))
+		(toc-files (glob (str base file-regexp))))
 
 (defn toc
 	"Main method"
 	[base] 
-	; clean up previous file
+	; clean up previous files
 	(write "" false)
+	(if (@options :one)
+		(spit (path-to-html-output nil) ""))
+
 	(if (@options :customization)
-	 (write (slurp (str (@options :customization) "/header.html"))))
+	 	(write (slurp (str (@options :customization) "/header.html"))))
 	(toc-folder base)
 	(if (@options :customization)
-	 (write (slurp (str (@options :customization) "/footer.html")))))
+	 	(write (slurp (str (@options :customization) "/footer.html")))))
 
 (defn -main
 	"Main method. Will be called from the command line"
@@ -155,10 +161,10 @@
 				["-h" "--help" "Print this message"]
      			["-o" "--output" "Output folder" :default "output"] 
      			["-toc" "--toc-filename" "TOC filename" :default "toc.html"]
-     			; ["-e" "--embed-toc" "TOC inside the generated HTML" :default false]
-     			; ["-e" "--embed-toc" "TOC inside the generated HTML" :default false]
+     			["--one" "one html file for all the markdown output" :default false]
      			["-d" "--folder" "The top folder with the markdown files" :default "text"]
      			["-c" "--customization" "A folder with header.html, footer.html"])]
+
 	(if (contains? loptions :help)
 		(println banner)
 		(do
@@ -174,9 +180,6 @@
 		{
 		 :customization "../niclojure/html"
 		 :folder "../niclojure/texten"
-		 :toc-filename "toc.html" 
+		 :toc-filename "toc.html"
+		 :one false
 		 :output "output"}))
-
-; (def t1 (toc-one (parse-file "text/simple.md")))
-; (println (linkify-toc "a.html" t1))
-(toc (@options :folder))

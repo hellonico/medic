@@ -5,11 +5,6 @@
 ; try to make it multiline 
 (def pre-process-pattern #"@@@ (.*) (.*) @@@")
 (def toc-int (ref 6))
-
-; for compatibility
-(defn ruby[file args]
-	(code file args))
-
 (defn toc-i[] @toc-int)
 
 (defn toc
@@ -20,6 +15,10 @@
 
 (defn code[file args]
 	(str "<pre>" (slurp args) "</pre>"))
+
+; for compatibility with kitabu
+(defn ruby[file args]
+	(code file args))
 
 (defn exec[file args]
 	(load-string args))
