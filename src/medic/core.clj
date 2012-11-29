@@ -1,10 +1,10 @@
 (ns medic.core
 	(:gen-class :main true)
 	(:use org.satta.glob)
-	(:require [medic.pre :as pre])
-	(:require [clojure.java.io :as io])
 	(:use jsoup.soup)
 	(:use [clojure.tools.cli :only [cli]])
+	(:require [medic.pre :as pre])
+	(:require [clojure.java.io :as io])
 	(:import [com.petebevin.markdown MarkdownProcessor])
 	(:import [java.io File]))
 
@@ -14,9 +14,7 @@
 (def htags (map #(str "h" %) (range 1 7)))
 ; should be as an option
 (def file-regexp "/**/*.md")
-; one for all
-; (def bit-mode (bit-or org.pegdown.Extensions/ALL org.pegdown.Extensions/))
-; (def bit-mode 0)
+; one processor for all runs
 (def peg (org.pegdown.PegDownProcessor.))
 
 (defn path-to-toc[]
@@ -28,6 +26,7 @@
 	([text] (spit (path-to-toc) text :append true)))
 
 (defn markup-to-html
+	"Convert some markup file as string to html"
 	[content]
 	(.markdownToHtml peg content))
 
@@ -37,9 +36,8 @@
 	[filepath]
 		(markup-to-html (slurp filepath)))
 
-; (.markdown (MarkdownProcessor.) (slurp filepath)))
-
 (defn sanitize
+	"Simple sanitizing method for creating links"
 	[html]
 	  (.replaceAll html " " ""))
 
@@ -70,7 +68,8 @@
 	  	(.html htag) 
 	  	"</a>"))))
 
-(defn linkify-toc
+(defn linkify-html
+	"Add a link to all header tags of an html file"
 	[html-file content]
 	(doseq [htag htags]
 		(doseq [h (select htag content)]
@@ -128,7 +127,7 @@
  	 	(html-with-anchors parsed) :append (@options :one))
  	 ; write toc to file
      (write 
-     	(linkify-toc html-output-file (toc-one parsed)))))
+     	(linkify-html html-output-file (toc-one parsed)))))
 
 (defn toc-files
 	"Process all <files>"
@@ -153,7 +152,6 @@
 	"Main method"
 	[base] 
 		(toc-folder base))
-
 
 (defn -main
 	"Main method. Will be called from the command line"
