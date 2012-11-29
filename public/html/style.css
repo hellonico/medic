@@ -1,8 +1,11 @@
 * {
 	font-family: Verdana;
-	font-size: 10px;
+	font-size: 14px;
 }
 
 h1 {
 	color: blue;
+}
+h2 {
+	color: black;
 }

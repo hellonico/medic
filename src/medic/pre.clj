@@ -50,8 +50,10 @@
 (defn pre-process-file
 	"Pre process a whole file"
 	[file]
-	(let[tmp-file (File/createTempFile "tmp" "")]
+	(let[tmp-file (File/createTempFile "tmp" "") 
+		 ; make sure this is a path
+		 filepath (.getPath (as-file file))]
 		(doseq [line (line-seq (reader file))]
-			(spit tmp-file (pre-process file line) :append true)
+			(spit tmp-file (pre-process filepath line) :append true)
 			(spit tmp-file "\n" :append true))
 		(slurp tmp-file)))
