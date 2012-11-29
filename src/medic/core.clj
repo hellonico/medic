@@ -116,7 +116,7 @@
 (defn process-content
 	"Process the content of a markup file"
 	[markup-file]
-	(println "Processing:" markup-file)
+	; (println "Processing:" markup-file)
 	(let [ 
 		parsed (parse-file markup-file)
 		html-output-file (path-to-html-output markup-file) 
