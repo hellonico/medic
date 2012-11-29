@@ -35,12 +35,9 @@
 	"Pre process line of file"
 	[file line]
 	(let[[l method args] (re-find pre-process-pattern line)] 
-		(println "Looking for:" (list (symbol (str "medic.pre/" method)) file args))
 			(if method
-			  (if (nil? args)
-			  	(eval (list (symbol (str "medic.pre/" method)) file))
-			  	(eval (list (symbol (str "medic.pre/" method)) file args)))
-			  line)))
+				(eval (list (symbol (str "medic.pre/" method)) file args)))
+			  line))
 
 (defn pre-process-file
 	"Pre process a whole file"

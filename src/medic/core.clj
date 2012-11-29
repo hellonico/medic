@@ -138,9 +138,7 @@
 		(if (@options :one)
 			(spit (path-to-html-output nil) ""))
 		(if (@options :customization)
-			(do 
-			(println "Writing header")
-	 		(write (slurp (str (@options :customization) "/header.html")))))
+	 		(write (slurp (str (@options :customization) "/header.html"))))
 		(doseq [markup-file files] 
 		  (process-content markup-file))
 		(if (@options :customization)
