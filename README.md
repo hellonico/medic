@@ -10,9 +10,9 @@
 * ~~Insert links into the TOC~~
 * ~~Generate HTML for all files separately~~
 * ~~Insert code text into the HTML~~
+* ~~Export to one PDF file~~
 * Generate one HTML file from all markdown files
 * Also allow to insert TOC in the generated html file
-* Export to one PDF file
 
 ## Usage
 

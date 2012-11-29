@@ -1,4 +1,4 @@
-(ns medic.defaults)
+(ns medic.default)
 
 (def defaults {
 	

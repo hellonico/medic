@@ -1,9 +1,11 @@
 (defproject medic "1.0.0"
   :description "Create a TOC from a set of markdown files"
   :main medic.core
-  ; :dev-dependencies [
-  ; 	[midje "1.4.0"]
-  ; ]
+  :dev-dependencies [
+  	[midje "1.4.0"]
+    [com.stuartsierra/lazytest "1.2.3"]
+  ]
+  :repositories {"stuart" "http://stuartsierra.com/maven2"}
   :dependencies [
     
   	[org.clojure/clojure "1.5.0-beta1"]

@@ -15,7 +15,9 @@
 ; should be as an option
 (def file-regexp "/**/*.md")
 ; one for all
-(def peg (org.pegdown.PegDownProcessor. 0))
+; (def bit-mode (bit-or org.pegdown.Extensions/ALL org.pegdown.Extensions/))
+; (def bit-mode 0)
+(def peg (org.pegdown.PegDownProcessor.))
 
 (defn path-to-toc[]
 	(str (@options :output) "/" (@options :toc-filename)))
@@ -29,10 +31,11 @@
 	[content]
 	(.markdownToHtml peg content))
 
+
 (defn markup-file-to-html
 	"turn markup into html"
 	[filepath]
-		markup-to-html (slurp filepath))
+		(markup-to-html (slurp filepath)))
 
 ; (.markdown (MarkdownProcessor.) (slurp filepath)))
 
@@ -130,8 +133,18 @@
 (defn toc-files
 	"Process all <files>"
 	[files]
+		; clean up previous files
+		(write "" false)
+		(if (@options :one)
+			(spit (path-to-html-output nil) ""))
+		(if (@options :customization)
+			(do 
+			(println "Writing header")
+	 		(write (slurp (str (@options :customization) "/header.html")))))
 		(doseq [markup-file files] 
-		  (process-content markup-file)))
+		  (process-content markup-file))
+		(if (@options :customization)
+	 		(write (slurp (str (@options :customization) "/footer.html")))))
 
 (defn toc-folder
 	"Prepare a TOC from files found in a folder"
@@ -141,16 +154,8 @@
 (defn toc
 	"Main method"
 	[base] 
-	; clean up previous files
-	(write "" false)
-	(if (@options :one)
-		(spit (path-to-html-output nil) ""))
+		(toc-folder base))
 
-	(if (@options :customization)
-	 	(write (slurp (str (@options :customization) "/header.html"))))
-	(toc-folder base)
-	(if (@options :customization)
-	 	(write (slurp (str (@options :customization) "/footer.html")))))
 
 (defn -main
 	"Main method. Will be called from the command line"
@@ -178,7 +183,7 @@
 (dosync 
 	(ref-set options 
 		{
-		 :customization "../niclojure/html"
+		 :customization "public/html"
 		 :folder "../niclojure/texten"
 		 :toc-filename "toc.html"
 		 :one false
