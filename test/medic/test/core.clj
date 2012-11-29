@@ -9,12 +9,12 @@
 (deftest sanitize-me
 	(is (= (sanitize "1 2 3") "123")))
 
-; (deftest write-me
-; 	(write (write "hello" false))
-; 	(is (= (slurp (path-to-toc)) "hello") "hello")
-; 	(write (write "hello"))
-; 	(is (= (slurp (path-to-toc)) "hellohello") "hello")
-; 	(is (.delete (as-file (path-to-toc))) "cannot delete toc file"))
+(deftest write-me
+	(write (write "hello" false))
+	(is (= (slurp (path-to-toc)) "hello") "hello")
+	(write (write "hello"))
+	(is (= (slurp (path-to-toc)) "hellohello") "hello")
+	(is (.delete (as-file (path-to-toc))) "cannot delete toc file"))
 
 (def m1 (markup-file-to-html "text/this_is_section_1.md"))
 (def p1 (parse m1))
@@ -47,4 +47,3 @@
 (deftest big-toc
 	(toc-folder "../niclojure/textja")
 	(medic.pdf/generate-pdf ["output/toc.html"] "output/toc2.pdf"))
-
