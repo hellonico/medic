@@ -6,6 +6,9 @@
   (:use clojure.test)
   (:use jsoup.soup))
 
+(deftest sanitize-me
+	(is (= (sanitize "1 2 3") "123")))
+
 ; (deftest write-me
 ; 	(write (write "hello" false))
 ; 	(is (= (slurp (path-to-toc)) "hello") "hello")
@@ -30,16 +33,18 @@
 		"<a name=\"DocumentationNotes\"><h1>Documentation Notes</h1></a>")
 		"Cannot anchor a tag"))
 
-(deftest path-to-doc-me
-	(is (= "output/toc.html" (path-to-toc)) "Test default path to doc"))
+; (deftest path-to-doc-me
+; 	(is (= "output/toc.html" (path-to-toc)) "Test default path to doc"))
 
-(deftest html-me
-	(toc-files ["text/this_is_section_1.md"])
-	(is (.exists (io/as-file "output/toc.html")) "TOC does not exist"))
+; (deftest html-me
+; 	(toc-files ["text/this_is_section_1.md"])
+; 	(is (.exists (io/as-file "output/toc.html")) "TOC does not exist"))
 
-(deftest pdf-me
-	(medic.pdf/generate-pdf ["output/toc.html"] "output/toc.pdf")
-	(is (.exists (io/as-file "output/toc.pdf")) "TOC does not exist"))
+; (deftest pdf-me
+; 	(medic.pdf/generate-pdf ["output/toc.html"] "output/toc.pdf")
+; 	(is (.exists (io/as-file "output/toc.pdf")) "TOC does not exist"))
 
-
+(deftest big-toc
+	(toc-folder "../niclojure/textja")
+	(medic.pdf/generate-pdf ["output/toc.html"] "output/toc2.pdf"))
 

@@ -105,7 +105,7 @@
 (defn parse-file
 	"pre process and parse markdown to html"
 	[filepath]
-	(parse (markup-to-html (pre/pre-read filepath))))
+		(parse (markup-to-html (pre/pre-process-file filepath))))
 
 (defn toc-one
 	"Remove all the tags except header tags to keep doc structure
@@ -184,7 +184,7 @@
 	(ref-set options 
 		{
 		 :customization "public/html"
-		 :folder "../niclojure/texten"
+		 :folder "../niclojure/textja"
 		 :toc-filename "toc.html"
 		 :one false
 		 :output "output"}))
