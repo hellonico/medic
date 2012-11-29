@@ -6,4 +6,6 @@
 
 @@@ code text/code.clj @@@ 
 
-@@@ exec (System/currentTimeMillis) @@@ 
+@@@ exec (java.lang.System/currentTimeMillis) @@@ 
+
+_hello_

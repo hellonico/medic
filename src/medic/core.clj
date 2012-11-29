@@ -143,10 +143,15 @@
 		(if (@options :customization)
 	 		(write (slurp (str (@options :customization) "/footer.html")))))
 
+(defn toc-regexp
+	"Convenience method for easy globing of files"
+	[regexp]
+	(toc-files (glob regexp)))
+
 (defn toc-folder
 	"Prepare a TOC from files found in a folder"
 	[base]
-		(toc-files (glob (str base file-regexp))))
+	(toc-regexp (str base file-regexp)))
 
 (defn toc
 	"Main method"

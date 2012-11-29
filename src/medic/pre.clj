@@ -18,17 +18,22 @@
 	[file args]
 	  (load-string args))
 
-(defn include[file filename]
+(defn include
+	"include a file relative to the given file"
+	[file filename]
 	(slurp (str 
 		(.getParent (as-file (.getAbsolutePath (as-file file)))) 
 		"/" 
 		filename)))
 
-(defn code[file args]
+(defn code
+	"Block code"
+	[file args]
 	(str "<pre>" (slurp args) "</pre>"))
 
-; for compatibility with kitabu
-(defn ruby[file args]
+; for compatibility with kitabu, but broken
+(defn ruby
+	[file args]
 	(str "<pre>" "ruby" "</pre>"))
 
 (defn pre-process
@@ -36,8 +41,11 @@
 	[file line]
 	(let[[l method args] (re-find pre-process-pattern line)] 
 			(if method
-				(eval (list (symbol (str "medic.pre/" method)) file args)))
-			  line))
+				 (try 
+				  (eval (list (symbol (str "medic.pre/" method)) file args))
+				  (catch Exception e (println "pre-process catch [" method "]:" e))
+				  (finally line))
+			  line)))
 
 (defn pre-process-file
 	"Pre process a whole file"

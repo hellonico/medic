@@ -6,6 +6,10 @@
   (:use clojure.test)
   (:use jsoup.soup))
 
+(deftest include-me
+	(toc-files ["text/includes.md"])
+	(is (not (.contains (slurp "output/includes.md.html") "@@@")) "Pre processing failed"))
+
 (deftest sanitize-me
 	(is (= (sanitize "1 2 3") "123")))
 
@@ -47,3 +51,6 @@
 (deftest big-toc
 	(toc-folder "../niclojure/textja")
 	(medic.pdf/generate-pdf ["output/toc.html"] "output/toc2.pdf"))
+
+(deftest all-md
+	(toc-regexp "text/*.md"))
