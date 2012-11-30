@@ -1,6 +1,7 @@
 (ns medic.pre
-	(:import java.io.File)
-	(:use clojure.java.io))
+	(:use medic.light)
+	(:use clojure.java.io)
+	(:import java.io.File))
 
 ; in the future try to make it multiline 
 (def pre-process-pattern #"@@@ (.*) (.*) @@@")
@@ -29,12 +30,13 @@
 (defn code
 	"Block code"
 	[file args]
-	(str "<pre>" (slurp args) "</pre>"))
+	; (println args)
+	(lightify args))
 
 ; for compatibility with kitabu, but broken
 (defn ruby
 	[file args]
-	(str "<pre>" "ruby" "</pre>"))
+	(str "<pre>" "ruby " file "</pre>"))
 
 (defn pre-process
 	"Pre process line of file"
