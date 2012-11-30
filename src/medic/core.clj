@@ -69,10 +69,12 @@
 				html-file
 				(str (@options :customization) "/footer-" ext ".html")
 				]
-				(str (path-to-toc) ".tmp")
+				(str html-file ".tmp")
 				)
-			(io/delete-file (path-to-toc))
-			(.renameTo (io/as-file (str (path-to-toc) ".tmp")) (io/as-file (path-to-toc)))
+			(io/delete-file html-file)
+			(.renameTo 
+				(io/as-file (str html-file ".tmp")) 
+				(io/as-file html-file))
 	)))
 
 (defn clean-up
@@ -88,6 +90,8 @@
 		(doseq [markup-file files] 
 		  (process-content markup-file))
 		(wrap-if-needed (path-to-toc) "toc")
+		(if (@options :one) 
+			(wrap-if-needed (path-to-html-output) "one"))
 		)
 
 (defn toc-regexp
