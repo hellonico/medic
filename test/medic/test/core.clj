@@ -1,12 +1,16 @@
 (ns medic.test.core
   (:require medic.pdf)
   (:use midje.sweet)
+  (:use org.satta.glob)
   (:use [clojure.java.io :as io])
   (:use medic.core)
   (:use medic.modify)
   (:use medic.parse)
   (:use clojure.test)
   (:use jsoup.soup))
+
+; clean up
+(doseq [f (glob "text/*.html")] (.delete f))
 
 (set-options 
 		{
