@@ -27,8 +27,8 @@
 			(.getName (io/file filepath)) 
 			".html")))
 
-(defn write
-	"Helper method. Writes/Append to file"
+(defn write-toc
+	"Helper method. write-tocs/Append to file"
 	([text dontappend] (spit (path-to-toc) text))
 	([text] (spit (path-to-toc) text :append true)))
 
@@ -51,27 +51,27 @@
 				(path-to-html-output) 
 				(path-to-html-output markup-file))
 	 ] 
-	 ; write html to file
+	 ; write-toc html to file
  	 (spit 
  	 	html-output-file
  	 	(html-with-anchors parsed) :append (@options :one))
- 	 ; write toc to file
-     (write 
+ 	 ; write-toc toc to file
+     (write-toc 
      	(linkify-html html-output-file (toc-one parsed)))))
 
 (defn toc-files
 	"Process all <files>"
 	[files]
 		; clean up previous files
-		(write "" false)
+		(write-toc "" false)
 		(if (@options :one)
 			(spit (path-to-html-output) ""))
 		(if (@options :customization)
-	 		(write (slurp (str (@options :customization) "/header.html"))))
+	 		(write-toc (slurp (str (@options :customization) "/header-toc.html"))))
 		(doseq [markup-file files] 
 		  (process-content markup-file))
 		(if (@options :customization)
-	 		(write (slurp (str (@options :customization) "/footer.html")))))
+	 		(write-toc (slurp (str (@options :customization) "/footer-toc.html")))))
 
 (defn toc-regexp
 	"Convenience method for easy globing of files"

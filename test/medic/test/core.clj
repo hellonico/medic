@@ -24,9 +24,9 @@
 	(is (= (sanitize "1 2 3") "123")))
 
 (deftest write-me
-	(write (write "hello" false))
+	(write-toc "hello" false)
 	(is (= (slurp (path-to-toc)) "hello") "hello")
-	(write (write "hello"))
+	(write-toc "hello")
 	(is (= (slurp (path-to-toc)) "hellohello") "hello")
 	(is (.delete (as-file (path-to-toc))) "cannot delete toc file"))
 
