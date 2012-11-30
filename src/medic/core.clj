@@ -98,12 +98,18 @@
 	(let [
 		[loptions args banner]  
 			(cli args
-				["-h" "--help" "Print this message"]
-     			["-o" "--output" "Output folder" :default "output"] 
-     			["-toc" "--toc-filename" "TOC filename" :default "toc.html"]
-     			["--one" "one html file for all the markdown output" :default false]
-     			["-d" "--folder" "The top folder with the markdown files" :default "text"]
-     			["-c" "--customization" "A folder with header.html, footer.html"])]
+				["-h" "--help" 
+					"Print this message"]
+     			["-o" "--output" 
+     				"Output folder" :default "output"] 
+     			["-toc" "--toc-filename" 
+     				"TOC filename" :default "toc.html"]
+     			["--one" 
+     				"one html file for all the markdown output." :default false]
+     			["-d" "--folder" 
+     				"The top folder containing the markdown files" :default "text"]
+     			["-c" "--customization" 
+     				"A folder with header.html, footer.html"])]
 
 	(if (contains? loptions :help)
 		(println banner)
