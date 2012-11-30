@@ -4,7 +4,7 @@
 
 @@@ include this_is_section_1.md @@@
 
-@@@ code text/code.clj @@@ 
+@@@ code text/test.clj @@@ 
 
 @@@ exec (java.lang.System/currentTimeMillis) @@@ 
 

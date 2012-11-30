@@ -3,6 +3,8 @@
   (:use midje.sweet)
   (:use [clojure.java.io :as io])
   (:use medic.core)
+  (:use medic.modify)
+  (:use medic.parse)
   (:use clojure.test)
   (:use jsoup.soup))
 

@@ -1,92 +1,21 @@
 (ns medic.core
 	(:gen-class :main true)
 	(:use org.satta.glob)
+	(:use medic.modify)
+	(:use medic.parse)
+	(:use medic.default)
 	(:use jsoup.soup)
 	(:use [clojure.tools.cli :only [cli]])
-	(:require [medic.pre :as pre])
 	(:require [clojure.java.io :as io])
-	(:import [org.pegdown PegDownProcessor])
 	(:import [java.io File]))
 
 ; keep the options as a ref available
 (def options (ref {}))
-; keep those tags here
-(def htags (map #(str "h" %) (range 1 7)))
 ; should be as an option
 (def file-regexp "/**/*.md")
-; one processor for all runs
-(def peg (PegDownProcessor.))
 
 (defn path-to-toc[]
 	(str (@options :output) "/" (@options :toc-filename)))
-
-(defn write
-	"Helper method. Writes/Append to file"
-	([text dontappend] (spit (path-to-toc) text))
-	([text] (spit (path-to-toc) text :append true)))
-
-(defn markup-to-html
-	"Convert some markup file as string to html"
-	[content]
-	(.markdownToHtml peg content))
-
-(defn markup-file-to-html
-	"turn markup into html"
-	[filepath]
-		(markup-to-html (slurp filepath)))
-
-(defn sanitize
-	"Simple sanitizing method for creating links"
-	[html]
-	  (.replaceAll html " " ""))
-
-(defn anchorify
-	"wrap a tag with a name anchor"
-	[htag]
-	(let[sanity (sanitize (.html htag))]
-	(.html htag 
-		(str 
-		 "<" (.tagName htag) ">" 
-		 (.html htag) 
-		 "</" (.tagName htag) ">" 
-		 "</a>"))
-	(.tagName htag "a")
-	(.attr htag "name" sanity)))
-
-(defn linkify-tag
-	"Change a header tag to the same header with a link inside"
-	[html-file htag]
-	(let [
-		filename (.getName (io/file html-file)) 
-		link (str filename "#" (sanitize (.html htag)))
-		]
-	  (.html htag (str 
-	  	"<a target=\"_blank\" href=\"" 
-	  	link 
-	  	"\">" 
-	  	(.html htag) 
-	  	"</a>"))))
-
-(defn linkify-html
-	"Add a link to all header tags of an html file"
-	[html-file content]
-	(doseq [htag htags]
-		(doseq [h (select htag content)]
-			(linkify-tag html-file h)))
-	content)
-
-(defn anchors
-	"wrap all header tags with name anchors"
-	[content]
-	(doseq [htag htags]
-		(doseq [h (select htag content)]
-			(anchorify h)))
-	content)
-
-(defn html-with-anchors 
-	"Puts anchors in the HTML and clean it"
-	[parsed]
-	(select "body > *" (anchors (.clone parsed))))
 
 (defn path-to-html-output
 	"Find the path to output html version of a markup file"
@@ -100,10 +29,10 @@
 			(.getName (io/file filepath)) 
 			".html")))
 
-(defn parse-file
-	"pre process and parse markdown to html"
-	[filepath]
-		(parse (markup-to-html (pre/pre-process-file filepath))))
+(defn write
+	"Helper method. Writes/Append to file"
+	([text dontappend] (spit (path-to-toc) text))
+	([text] (spit (path-to-toc) text :append true)))
 
 (defn toc-one
 	"Remove all the tags except header tags to keep doc structure
