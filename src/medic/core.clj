@@ -3,6 +3,7 @@
 	(:use medic.modify)
 	(:use medic.parse)
 	(:use medic.default)
+	(:use medic.kusuri)
 	(:use org.satta.glob)
 	(:use jsoup.soup)
 	(:use [clojure.tools.cli :only [cli]])
@@ -43,7 +44,6 @@
 (defn process-content
 	"Process the content of a markup file"
 	[markup-file]
-	; (println "Processing:" markup-file)
 	(let [ 
 		parsed (parse-file markup-file)
 		html-output-file 
@@ -59,19 +59,36 @@
      (write-toc 
      	(linkify-html html-output-file (toc-one parsed)))))
 
+(defn wrap-if-needed
+	[html-file ext]
+	(if (@options :customization)
+		(do 
+			(concat-files 
+				[
+				(str (@options :customization) "/header-" ext ".html")
+				html-file
+				(str (@options :customization) "/footer-" ext ".html")
+				]
+				(str (path-to-toc) ".tmp")
+				)
+			(io/delete-file (path-to-toc))
+			(.renameTo (io/as-file (str (path-to-toc) ".tmp")) (io/as-file (path-to-toc)))
+	)))
+
+(defn clean-up
+	"clean up previous files: TOC and one file html"
+	[]
+	(write-toc "" false)
+	(if (@options :one) (spit (path-to-html-output) "")))
+
 (defn toc-files
 	"Process all <files>"
 	[files]
-		; clean up previous files
-		(write-toc "" false)
-		(if (@options :one)
-			(spit (path-to-html-output) ""))
-		(if (@options :customization)
-	 		(write-toc (slurp (str (@options :customization) "/header-toc.html"))))
+		(clean-up)	
 		(doseq [markup-file files] 
 		  (process-content markup-file))
-		(if (@options :customization)
-	 		(write-toc (slurp (str (@options :customization) "/footer-toc.html")))))
+		(wrap-if-needed (path-to-toc) "toc")
+		)
 
 (defn toc-regexp
 	"Convenience method for easy globing of files"

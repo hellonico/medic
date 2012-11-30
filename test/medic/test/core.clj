@@ -6,6 +6,7 @@
   (:use medic.core)
   (:use medic.modify)
   (:use medic.parse)
+  (:use medic.kusuri)
   (:use clojure.test)
   (:use jsoup.soup))
 
@@ -19,6 +20,9 @@
 		 :toc-filename "toc.html"
 		 :one false
 		 :output "output"})
+
+(deftest concat-me
+	(concat-files (glob "text/*.txt") "output/concat.txt"))
 
 (deftest sanitize-me
 	(is (= (sanitize "1 2 3") "123")))
