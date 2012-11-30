@@ -12,7 +12,7 @@
 * ~~Insert code text into the HTML~~
 * ~~Export to one PDF file~~
 * ~~Colorize code~~
-* Generate one HTML file from all markdown files
+* ~~Generate one HTML file from all markdown files~~
 * Also allow to insert TOC in the generated html file
 
 ## Usage

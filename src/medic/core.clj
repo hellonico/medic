@@ -1,9 +1,9 @@
 (ns medic.core
 	(:gen-class :main true)
-	(:use org.satta.glob)
 	(:use medic.modify)
 	(:use medic.parse)
 	(:use medic.default)
+	(:use org.satta.glob)
 	(:use jsoup.soup)
 	(:use [clojure.tools.cli :only [cli]])
 	(:require [clojure.java.io :as io])
@@ -19,10 +19,8 @@
 
 (defn path-to-html-output
 	"Find the path to output html version of a markup file"
-	[filepath]
-	(if (@options :one)
-		(str 
-			(@options :output) "/one.html" )
+	([] (str (@options :output) "/one.html" ))
+	([filepath]
 		(str 
 			(@options :output) 
 			"/" 
@@ -48,7 +46,10 @@
 	; (println "Processing:" markup-file)
 	(let [ 
 		parsed (parse-file markup-file)
-		html-output-file (path-to-html-output markup-file) 
+		html-output-file 
+			(if (@options :one)
+				(path-to-html-output) 
+				(path-to-html-output markup-file))
 	 ] 
 	 ; write html to file
  	 (spit 
@@ -64,7 +65,7 @@
 		; clean up previous files
 		(write "" false)
 		(if (@options :one)
-			(spit (path-to-html-output nil) ""))
+			(spit (path-to-html-output) ""))
 		(if (@options :customization)
 	 		(write (slurp (str (@options :customization) "/header.html"))))
 		(doseq [markup-file files] 
@@ -87,6 +88,10 @@
 	[base] 
 		(toc-folder base))
 
+(defn set-options
+	[-options]
+	(dosync (ref-set options -options)))
+
 (defn -main
 	"Main method. Will be called from the command line"
 	[& args]
@@ -103,18 +108,9 @@
 	(if (contains? loptions :help)
 		(println banner)
 		(do
-			(dosync (ref-set options loptions))
+			(set-options loptions)
 			; make sure we have the output directory
 			(.mkdir (io/as-file (@options :output)))
 			(println "Using parameters:" @options)
 			(toc (@options :folder))))
 	(System/exit 0)))
-
-(dosync 
-	(ref-set options 
-		{
-		 :customization "public/html"
-		 :folder "../niclojure/textja"
-		 :toc-filename "toc.html"
-		 :one false
-		 :output "output"}))

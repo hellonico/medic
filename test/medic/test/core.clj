@@ -8,6 +8,14 @@
   (:use clojure.test)
   (:use jsoup.soup))
 
+(set-options 
+		{
+		 :customization "public/html"
+		 :folder "../niclojure/textja"
+		 :toc-filename "toc.html"
+		 :one false
+		 :output "output"})
+
 (deftest sanitize-me
 	(is (= (sanitize "1 2 3") "123")))
 
