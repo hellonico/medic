@@ -4,7 +4,6 @@
   :dev-dependencies [
   	[midje "1.4.0"]
     [com.stuartsierra/lazytest "1.2.3"]
-    [lein-test-out "0.1.0"]
   ]
   :repositories {
     ; lazytest
