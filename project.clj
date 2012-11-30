@@ -5,7 +5,10 @@
   	[midje "1.4.0"]
     [com.stuartsierra/lazytest "1.2.3"]
   ]
-  :repositories {"stuart" "http://stuartsierra.com/maven2"}
+  :repositories {
+    "stuart" "http://stuartsierra.com/maven2"
+    "crickets" "http://repository.threecrickets.com/maven/"
+  }
   :dependencies [
     
   	[org.clojure/clojure "1.5.0-beta1"]
@@ -15,14 +18,15 @@
 	  [clojure-soup/clojure-soup "0.0.1"]
 
     ; not used yet
-    [com.uwyn/jhighlight "1.0"]
+    ; [com.uwyn/jhighlight "1.0"]
+    [com.threecrickets.jygments/jygments "0.9.0"]
 
-	  [org.markdownj/markdownj "0.3.0-1.0.2b4"]
+	  ; [org.markdownj/markdownj "0.3.0-1.0.2b4"]
     ; or
     [org.pegdown/pegdown "1.2.0"]
     [org.parboiled/parboiled-java "1.1.3"]
-     ; really needed ? ? ?
-    [org.parboiled/parboiled-core "1.1.3"]
+     ; not needed ? ? ?
+     ; [org.parboiled/parboiled-core "1.1.3"]
      ; [asm/asm-all "3.3.1"]
 
     ; pdf generation

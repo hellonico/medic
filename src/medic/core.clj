@@ -5,7 +5,7 @@
 	(:use [clojure.tools.cli :only [cli]])
 	(:require [medic.pre :as pre])
 	(:require [clojure.java.io :as io])
-	(:import [com.petebevin.markdown MarkdownProcessor])
+	(:import [org.pegdown PegDownProcessor])
 	(:import [java.io File]))
 
 ; keep the options as a ref available
@@ -15,7 +15,7 @@
 ; should be as an option
 (def file-regexp "/**/*.md")
 ; one processor for all runs
-(def peg (org.pegdown.PegDownProcessor.))
+(def peg (PegDownProcessor.))
 
 (defn path-to-toc[]
 	(str (@options :output) "/" (@options :toc-filename)))
