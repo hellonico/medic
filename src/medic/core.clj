@@ -81,7 +81,7 @@
  	 	(wrap-if-needed html-output-file "single"))
  	 ; write-toc toc to file
      (write-toc 
-     	(linkify-html html-output-file (toc-one parsed)))))
+     	(linkify-html html-output-file (toc-one parsed) (@options :one)))))
 
 (defn clean-up
 	"clean up previous files: TOC and one file html"
@@ -92,18 +92,34 @@
 	(write-toc "" false)
 	(if (@options :one) (spit (path-to-html-output) "")))
 
+(defn insert-toc
+	"Concat the toc and the one file into a single html file"
+	[]
+	(let [
+		toc-file (path-to-toc)
+		one-file (path-to-html-output)
+		tmp-file (str (@options :output) "/two.html")]
+		(concat-files [toc-file one-file] tmp-file)
+		(.delete (io/as-file one-file))
+		(.renameTo (io/as-file tmp-file) (io/as-file one-file))
+		))
+
 (defn toc-files
 	"Process all <files>"
 	[files]
 		(clean-up)	
+
 		(doseq [markup-file files] 
 		  (process-content markup-file))
-		(wrap-if-needed (path-to-toc) "toc")
+
+		(if (and (@options :embed) (@options :one))
+			(insert-toc)
+			(wrap-if-needed (path-to-toc) "toc"))
 		(if (@options :one) 
 			(wrap-if-needed (path-to-html-output) "one"))
 		(if (@options :one) 
-			(do (println (str (path-to-html-output) ".pdf"))
-			(generate-pdf [(path-to-html-output)] (str (path-to-html-output) ".pdf"))))
+			(generate-pdf [(path-to-html-output)] (str (path-to-html-output) ".pdf")))
+
 		)
 
 (defn toc-regexp
@@ -137,6 +153,8 @@
      				"Output folder" :default "output"] 
      			["-toc" "--toc-filename" 
      				"TOC filename" :default "toc.html"]
+     			["-e" "--embed" 
+     				"Embed TOC in output" :flag true]	
      			; ["--pdf"
      			; 	"Generate PDF" :default false]	
      			["-1" "--one"  

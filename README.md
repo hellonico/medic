@@ -13,7 +13,7 @@
 * ~~Export to one PDF file~~
 * ~~Colorize code~~
 * ~~Generate one HTML file from all markdown files~~
-* insert TOC in the generated html file
+* ~~insert TOC in the generated html file~~
 
 ## Usage
 
