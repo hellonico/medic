@@ -1,4 +1,5 @@
 
+![medic](../doc/medic.jpg)
 
 # Features
 
