@@ -1,0 +1,1 @@
+java -jar medic-*.jar -d doc -x -o output -c doc/html -e -1
