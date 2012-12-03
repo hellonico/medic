@@ -1,0 +1,21 @@
+#toc * {
+	margin-bottom: 0em;
+	line-height: 1.1em;
+	font-family: Verdana;
+	padding: 0 0 0 0;
+  margin: 0px 0 0px;
+  font-weight: normal;
+  border-bottom: 0px;
+}
+#toc h1 {
+	font-size: 16pt;
+  font-style: normal;
+}
+#toc h2 {
+	font-size: 14pt;
+  margin-left: 10px;
+}
+h3 > a {
+	font-size: 11pt;
+  margin-left: 20px;
+}	

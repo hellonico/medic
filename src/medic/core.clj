@@ -89,7 +89,7 @@
 	(if (@options :clean) (delete-file-recursively (io/as-file (@options :output))))
 	; make sure we have the output directory
 	(.mkdir (io/as-file (@options :output)))
-	(write-toc "" false)
+	(write-toc "<div id=\"toc\">" false)
 	(if (@options :one) (spit (path-to-html-output) "")))
 
 (defn insert-toc
@@ -113,6 +113,9 @@
 
 		(doseq [markup-file files] 
 		  (process-content markup-file))
+
+		; finish toc
+		(write-toc "</div>")
 
 		(if (and (@options :embed) (@options :one))
 			(insert-toc)

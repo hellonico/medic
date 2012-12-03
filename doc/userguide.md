@@ -1,3 +1,4 @@
+<!-- Start With a picture --> 
 
 ![medic](../doc/medic.jpg)
 
