@@ -37,7 +37,7 @@
 	"Remove all the tags except header tags to keep doc structure
 	Warning! Content is modified now."
 	[content]
-	(doseq [t ["p" "ul" "li" "a" "img" "pre" "code" "blockquote" ]]
+	(doseq [t ["table" "p" "ul" "li" "a" "img" "pre" "code" "blockquote" ]]
 		(.remove (select t content)))
 	($ content "body > *"))
 
