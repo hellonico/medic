@@ -19,19 +19,23 @@
 	[file args]
 	  (load-string args))
 
+(defn- path-from-same-folder
+	[file filename]
+	(str 
+		(.getParent (as-file (.getAbsolutePath (as-file file)))) 
+		"/" 
+		filename))
+
 (defn include
 	"include a file relative to the given file"
 	[file filename]
-	(slurp (str 
-		(.getParent (as-file (.getAbsolutePath (as-file file)))) 
-		"/" 
-		filename)))
+	(slurp (path-from-same-folder file filename)))
 
 (defn code
 	"Block code"
 	[file args]
-	; (println args)
-	(lightify args))
+	  (println (path-from-same-folder file args))
+	  (lightify (path-from-same-folder file args)))
 
 ; for compatibility with kitabu, but broken
 (defn ruby

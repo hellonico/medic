@@ -102,6 +102,8 @@
 		(concat-files [toc-file one-file] tmp-file)
 		(.delete (io/as-file one-file))
 		(.renameTo (io/as-file tmp-file) (io/as-file one-file))
+		; TOC can not be used as is, so delete it
+		(.delete (io/as-file toc-file))
 		))
 
 (defn toc-files
