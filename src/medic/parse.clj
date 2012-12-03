@@ -4,7 +4,7 @@
 	(:import [org.pegdown PegDownProcessor]))
 
 ; one processor for all runs
-(def peg (PegDownProcessor.))
+(def peg (PegDownProcessor.  org.pegdown.Extensions/ALL))
 
 (defn markup-to-html
 	"Convert some markup file as string to html"

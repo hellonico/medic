@@ -62,7 +62,8 @@
 (defn wrap-if-needed
 	[html-file ext]
 	(if (@options :customization)
-		(do 
+		(try 
+			(do 
 			(concat-files 
 				[
 				(str (@options :customization) "/header-" ext ".html")
@@ -74,12 +75,14 @@
 			(io/delete-file html-file)
 			(.renameTo 
 				(io/as-file (str html-file ".tmp")) 
-				(io/as-file html-file))
-	)))
+				(io/as-file html-file)))
+			(catch Exception e (println "In customize catch. Please add necessary files." e)))))
 
 (defn clean-up
 	"clean up previous files: TOC and one file html"
 	[]
+	; make sure we have the output directory
+	(.mkdir (io/as-file (@options :output)))
 	(write-toc "" false)
 	(if (@options :one) (spit (path-to-html-output) "")))
 
@@ -136,8 +139,6 @@
 		(println banner)
 		(do
 			(set-options loptions)
-			; make sure we have the output directory
-			(.mkdir (io/as-file (@options :output)))
 			(println "Using parameters:" @options)
 			(toc (@options :folder))))
 	(System/exit 0)))

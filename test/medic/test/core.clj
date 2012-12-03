@@ -16,7 +16,7 @@
 (set-options 
 		{
 		 :customization "public/html"
-		 :folder "../niclojure/textja"
+		 :folder "../streamhub-api-doc/en"
 		 :toc-filename "toc.html"
 		 :one false
 		 :output "output"})
@@ -72,3 +72,14 @@
 
 (deftest all-md
 	(toc-regexp "text/inc*.md"))
+
+; (set-options 
+; 		{
+; 		 :customization "../streamhub-api-doc/assets"
+; 		 :folder "../streamhub-api-doc/en"
+; 		 :toc-filename "toc.html"
+; 		 :one false
+; 		 :output "../streamhub-api-doc/build"})
+
+; (deftest external
+; 	(toc-folder "../streamhub-api-doc/en"))
