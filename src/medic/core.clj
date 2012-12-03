@@ -86,6 +86,7 @@
 (defn clean-up
 	"clean up previous files: TOC and one file html"
 	[]
+	(if (@options :clean) (delete-file-recursively (io/as-file (@options :output))))
 	; make sure we have the output directory
 	(.mkdir (io/as-file (@options :output)))
 	(write-toc "" false)
@@ -138,8 +139,10 @@
      				"TOC filename" :default "toc.html"]
      			; ["--pdf"
      			; 	"Generate PDF" :default false]	
-     			["--one" 
+     			["-1" "--one"  
      				"one html file for all the markdown output." :flag true]
+     			["-x" "--clean" 
+     				"Delete all files in output dir before running." :flag true]	
      			["-d" "--folder" 
      				"The top folder containing the markdown files" :default "text"]
      			["-c" "--customization" 

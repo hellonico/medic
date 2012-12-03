@@ -19,7 +19,9 @@
 	  [clojure-soup/clojure-soup "0.0.1"]
     [com.threecrickets.jygments/jygments "0.9.0"]
     [org.pegdown/pegdown "1.2.0"]
-    [org.parboiled/parboiled-java "1.1.3"]
+    [org.parboiled/parboiled-java "1.1.3"
+     ; :exclusions [asm/asm asm/analysis asm/tree asm/util]
+    ]
 
     ; not needed ? ? ?
     ; [org.parboiled/parboiled-core "1.1.3"]
