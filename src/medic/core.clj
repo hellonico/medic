@@ -41,23 +41,6 @@
 		(.remove (select t content)))
 	($ content "body > *"))
 
-(defn process-content
-	"Process the content of a markup file"
-	[markup-file]
-	(let [ 
-		parsed (parse-file markup-file)
-		html-output-file 
-			(if (@options :one)
-				(path-to-html-output) 
-				(path-to-html-output markup-file))
-	 ] 
-	 ; write-toc html to file
- 	 (spit 
- 	 	html-output-file
- 	 	(html-with-anchors parsed) :append (@options :one))
- 	 ; write-toc toc to file
-     (write-toc 
-     	(linkify-html html-output-file (toc-one parsed)))))
 
 (defn wrap-if-needed
 	[html-file ext]
@@ -77,6 +60,26 @@
 				(io/as-file (str html-file ".tmp")) 
 				(io/as-file html-file)))
 			(catch Exception e (println "In customize catch. Please add necessary files." e)))))
+
+(defn process-content
+	"Process the content of a markup file"
+	[markup-file]
+	(let [ 
+		parsed (parse-file markup-file)
+		html-output-file 
+			(if (@options :one)
+				(path-to-html-output) 
+				(path-to-html-output markup-file))
+	 ] 
+	 ; write html to file
+ 	 (spit 
+ 	 	html-output-file
+ 	 	(html-with-anchors parsed) :append (@options :one))
+ 	 (wrap-if-needed html-output-file "single")
+ 	 ; write-toc toc to file
+     (write-toc 
+     	(linkify-html html-output-file (toc-one parsed)))))
+
 
 (defn clean-up
 	"clean up previous files: TOC and one file html"
