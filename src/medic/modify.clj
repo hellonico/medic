@@ -37,7 +37,7 @@
 		link (str filename "#" (sanitize (.html htag)))
 		]
 	  (.html htag (str 
-	  	"<a target=\"_blank\" href=\"" 
+	  	"<a target=\"one\" href=\"" 
 	  	link 
 	  	"\">" 
 	  	(.html htag) 

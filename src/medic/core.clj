@@ -3,6 +3,7 @@
 	(:use medic.modify)
 	(:use medic.parse)
 	(:use medic.default)
+	(:use medic.pdf)
 	(:use medic.kusuri)
 	(:use org.satta.glob)
 	(:use jsoup.soup)
@@ -75,11 +76,12 @@
  	 (spit 
  	 	html-output-file
  	 	(html-with-anchors parsed) :append (@options :one))
- 	 (wrap-if-needed html-output-file "single")
+ 	 ; do not wrap each time when generating one file
+ 	 (if (not (@options :one))
+ 	 	(wrap-if-needed html-output-file "single"))
  	 ; write-toc toc to file
      (write-toc 
      	(linkify-html html-output-file (toc-one parsed)))))
-
 
 (defn clean-up
 	"clean up previous files: TOC and one file html"
@@ -98,6 +100,9 @@
 		(wrap-if-needed (path-to-toc) "toc")
 		(if (@options :one) 
 			(wrap-if-needed (path-to-html-output) "one"))
+		(if (@options :one) 
+			(do (println (str (path-to-html-output) ".pdf"))
+			(generate-pdf [(path-to-html-output)] (str (path-to-html-output) ".pdf"))))
 		)
 
 (defn toc-regexp
@@ -131,8 +136,10 @@
      				"Output folder" :default "output"] 
      			["-toc" "--toc-filename" 
      				"TOC filename" :default "toc.html"]
+     			; ["--pdf"
+     			; 	"Generate PDF" :default false]	
      			["--one" 
-     				"one html file for all the markdown output." :default false]
+     				"one html file for all the markdown output." :flag true]
      			["-d" "--folder" 
      				"The top folder containing the markdown files" :default "text"]
      			["-c" "--customization" 
