@@ -86,7 +86,7 @@
 (defn clean-up
 	"clean up previous files: TOC and one file html"
 	[]
-	(if (@options :clean) (delete-file-recursively (io/as-file (@options :output))))
+	(if (@options :clean) (delete-file-recursively (io/as-file (@options :output)) true))
 	; make sure we have the output directory
 	(.mkdir (io/as-file (@options :output)))
 	(write-toc "<div id=\"toc\">" false)
