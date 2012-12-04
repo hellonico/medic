@@ -13,14 +13,14 @@
 
 ; keep the options as a ref available
 ; set defaults here
-(def options (ref 
-	{   :customization "doc/html" 
+(def defaults {   :customization "doc/html" 
 		:one true 
 		:clean false 
 		:embed true
 		:folder "doc" 
 		:output "output" 
-		:toc-filename "toc.html"}))
+		:toc-filename "toc.html"})
+(def options (ref defaults))
 
 ; should be as an option
 (def file-regexp "/**/*.md")
@@ -156,7 +156,7 @@
 
 (defn set-options
 	[-options]
-	(dosync (ref-set options -options)))
+	(dosync (ref-set options (merge defaults -options))))
 
 (defn toc-with-options
 	"Use the given options to generate the content"
