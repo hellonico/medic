@@ -12,7 +12,16 @@
 	(:import [java.io File]))
 
 ; keep the options as a ref available
-(def options (ref {}))
+; set defaults here
+(def options (ref 
+	{   :customization "doc/html" 
+		:one true 
+		:clean false 
+		:embed true
+		:folder "doc" 
+		:output "output" 
+		:toc-filename "toc.html"}))
+
 ; should be as an option
 (def file-regexp "/**/*.md")
 
@@ -86,7 +95,10 @@
 (defn clean-up
 	"clean up previous files: TOC and one file html"
 	[]
-	(if (@options :clean) (delete-file-recursively (io/as-file (@options :output)) true))
+	(if (@options :clean) 
+		(try 
+			(delete-file-recursively (io/as-file (@options :output)))
+			(catch Exception e (println e))))
 	; make sure we have the output directory
 	(.mkdir (io/as-file (@options :output)))
 	(write-toc "<div id=\"toc\">" false)
@@ -146,6 +158,13 @@
 	[-options]
 	(dosync (ref-set options -options)))
 
+(defn toc-with-options
+	"Use the given options to generate the content"
+	[loptions]
+		(set-options loptions)
+		(println "Using parameters:" @options)
+		(toc (@options :folder)))
+
 (defn -main
 	"Main method. Will be called from the command line"
 	[& args]
@@ -170,11 +189,7 @@
      				"The top folder containing the markdown files" :default "text"]
      			["-c" "--customization" 
      				"A folder with header.html, footer.html"])]
-
 	(if (contains? loptions :help)
 		(println banner)
-		(do
-			(set-options loptions)
-			(println "Using parameters:" @options)
-			(toc (@options :folder))))
+		(toc-with-options loptions))		
 	(System/exit 0)))
