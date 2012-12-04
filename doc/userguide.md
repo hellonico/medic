@@ -1,6 +1,6 @@
 <!-- Start With a picture --> 
 
-![medic](../doc/medic.jpg)
+![medic](../doc/medic.png)
 
 # Features
 

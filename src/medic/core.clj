@@ -97,7 +97,7 @@
 	[]
 	(if (@options :clean) 
 		(try 
-			(delete-file-recursively (io/as-file (@options :output)))
+			(delete-file-recursively (io/as-file (@options :output)) true)
 			(catch Exception e (println e))))
 	; make sure we have the output directory
 	(.mkdir (io/as-file (@options :output)))
