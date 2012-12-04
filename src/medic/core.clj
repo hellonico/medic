@@ -54,6 +54,7 @@
 
 
 (defn wrap-if-needed
+	"Wrap the given html file with a header and a footer"
 	[html-file ext]
 	(if (@options :customization)
 		(try 
@@ -132,17 +133,20 @@
 		; finish toc
 		(write-toc "</div>")
 
+		; 
+		(if (not (@options :one))
+			(wrap-if-needed (path-to-toc) "toc"))
+
 		; test all in one page
 		(if (@options :one)
 			(do
-			(if (@options :embed) 
-				(insert-toc)
-				(wrap-if-needed (path-to-toc) "toc"))
-			(wrap-if-needed (path-to-html-output) "one")
-			(generate-pdf 
-				[(path-to-html-output)] 
-				(str (path-to-html-output) ".pdf")
-				(str (@options :customization) "/fonts")))))
+				(if (@options :embed) 
+					(insert-toc))
+				(wrap-if-needed (path-to-html-output) "one")
+				(generate-pdf 
+					[(path-to-html-output)] 
+					(str (path-to-html-output) ".pdf")
+					(str (@options :customization) "/fonts")))))
 
 (defn toc-regexp
 	"Convenience method for easy globing of files"
