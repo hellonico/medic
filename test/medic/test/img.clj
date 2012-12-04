@@ -5,7 +5,6 @@
 (defn test-conversion
 	[file expected]
 	(let [converted (markup-file-to-html file)]
-	(println converted)
 	(doseq [ex expected]
 		(is (.contains converted ex)))))
 	

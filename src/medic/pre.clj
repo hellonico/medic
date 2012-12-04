@@ -34,7 +34,6 @@
 (defn code
 	"Block code"
 	[file args]
-	  (println (path-from-same-folder file args))
 	  (lightify (path-from-same-folder file args)))
 
 ; for compatibility with kitabu, but broken

@@ -13,7 +13,8 @@
 
 ; keep the options as a ref available
 ; set defaults here
-(def defaults {   :customization "doc/html" 
+(def defaults {   
+	    :customization "doc" 
 		:one true 
 		:clean false 
 		:embed true
@@ -59,9 +60,9 @@
 			(do 
 			(concat-files 
 				[
-				(str (@options :customization) "/header-" ext ".html")
+				(str (@options :customization) "/html/header-" ext ".html")
 				html-file
-				(str (@options :customization) "/footer-" ext ".html")
+				(str (@options :customization) "/html/footer-" ext ".html")
 				]
 				(str html-file ".tmp")
 				)
@@ -135,8 +136,11 @@
 		(if (@options :one) 
 			(wrap-if-needed (path-to-html-output) "one"))
 		(if (@options :one) 
-			(generate-pdf [(path-to-html-output)] (str (path-to-html-output) ".pdf")))
-
+			(generate-pdf 
+				[(path-to-html-output)] 
+				(str (path-to-html-output) ".pdf")
+				(str (@options :customization) "/fonts")
+				))
 		)
 
 (defn toc-regexp
@@ -188,7 +192,7 @@
      			["-d" "--folder" 
      				"The top folder containing the markdown files" :default "text"]
      			["-c" "--customization" 
-     				"A folder with header.html, footer.html"])]
+     				"An assets folder. See documentation for more info"])]
 	(if (contains? loptions :help)
 		(println banner)
 		(toc-with-options loptions))		

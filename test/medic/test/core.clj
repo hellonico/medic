@@ -15,7 +15,7 @@
 
 (set-options 
 		{
-		 :customization "public/html"
+		 :customization "public"
 		 :folder "../streamhub-api-doc/en"
 		 :toc-filename "toc.html"
 		 :one false
