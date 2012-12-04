@@ -1,15 +1,13 @@
 @font-face {
-    font-family: DeliciousRoman;
-    src: url(../fonts/Walkway_SemiBold.ttf);
-    font-weight:400;
+    font-family: "Existence Unicase Light";
+    /* The url below is relative to the CSS. yey ! */
+    src: url(../fonts/Existence-UnicaseLight.otf)
 }
 * {
 	
 }
 #toc * {
-	font-family: "Walkway SemiBold";
-	/*font-family: "Existence Unicase Light";*/
-	/*font-family: "DeliciousRoman";*/
+	font-family: "Existence Unicase Light";
 	margin-bottom: 0em;
 	line-height: 1.5em;
 	padding: 0 0 0 0;
