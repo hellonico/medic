@@ -102,7 +102,6 @@
 			(catch Exception e (println e))))
 	; make sure we have the output directory
 	(.mkdir (io/as-file (@options :output)))
-	(write-toc "<div id=\"toc\">" false)
 	(if (@options :one) (spit (path-to-html-output) "")))
 
 (defn insert-toc
@@ -124,24 +123,26 @@
 	[files]
 		(clean-up)	
 
+		; start toc
+		(write-toc "<div id=\"toc\">" false)
+
 		(doseq [markup-file files] 
 		  (process-content markup-file))
 
 		; finish toc
 		(write-toc "</div>")
 
-		(if (and (@options :embed) (@options :one))
-			(insert-toc)
-			(wrap-if-needed (path-to-toc) "toc"))
-		(if (@options :one) 
-			(wrap-if-needed (path-to-html-output) "one"))
-		(if (@options :one) 
+		; test all in one page
+		(if (@options :one)
+			(do
+			(if (@options :embed) 
+				(insert-toc)
+				(wrap-if-needed (path-to-toc) "toc"))
+			(wrap-if-needed (path-to-html-output) "one")
 			(generate-pdf 
 				[(path-to-html-output)] 
 				(str (path-to-html-output) ".pdf")
-				(str (@options :customization) "/fonts")
-				))
-		)
+				(str (@options :customization) "/fonts")))))
 
 (defn toc-regexp
 	"Convenience method for easy globing of files"
