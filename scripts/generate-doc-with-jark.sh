@@ -1,1 +1,1 @@
-cat scripts/doc.cmd | jark -e 
+cat scripts/doc.clj | jark -e 
