@@ -48,7 +48,7 @@
 			(if method
 				 (try 
 				  (eval (list (symbol (str "medic.pre/" method)) file args))
-				  (catch Exception e (println "pre-process catch [" method "]:" e))
+				  (catch Exception e (println "pre-process catch [" method "] [" file "|" args "]:" e))
 				  (finally line))
 			  line)))
 

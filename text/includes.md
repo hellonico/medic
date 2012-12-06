@@ -9,3 +9,5 @@
 @@@ exec (java.lang.System/currentTimeMillis) @@@ 
 
 _hello_
+
+@@@ code test.java @@@

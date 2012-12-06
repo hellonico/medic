@@ -11,7 +11,7 @@
 (deftest one-file
 	(set-options 
 		{
-		 :customization "public/html"
+		 :customization "public"
 		 :folder "../niclojure/textja"
 		 :toc-filename "toc.html"
 		 :one true
