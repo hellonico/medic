@@ -2,10 +2,13 @@
   :description "TOCify, Includify, PDFfy a set of markdown files"
   :main medic.core
   :dev-dependencies [
-  	[midje "1.4.0"]
+  	; [midje "1.5.0"]
     [com.stuartsierra/lazytest "1.2.3"]
     [jark "0.4.3-clojure-1.5.0-alpha5" :exclusions [org.clojure]]
   ]
+  :profiles {:dev {:dependencies [
+    [midje "1.5-RC1"]
+  ]}}
   :repositories {
     ; lazytest
     "stuart" "http://stuartsierra.com/maven2"
